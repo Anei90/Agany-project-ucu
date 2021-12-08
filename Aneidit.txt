@@ -1,0 +1,201 @@
+-- phpMyAdmin SQL Dump
+-- version 5.0.2
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1:3306
+-- Generation Time: Dec 07, 2021 at 08:40 AM
+-- Server version: 5.7.31
+-- PHP Version: 7.3.21
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `id18063752_ucudb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+CREATE TABLE IF NOT EXISTS `admin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fullname` varchar(50) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `pass` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`id`, `fullname`, `username`, `pass`) VALUES
+(1, '', 'anei', 'anei'),
+(2, '', 'admin', 'admin'),
+(6, 'steve fastino', 'steve', 'steve');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `contact`
+--
+
+DROP TABLE IF EXISTS `contact`;
+CREATE TABLE IF NOT EXISTS `contact` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `contact`
+--
+
+INSERT INTO `contact` (`id`, `name`, `email`, `subject`, `message`) VALUES
+(2, 'steve fastino', 'fedistaits@gmail.com', 'inqury', 'Hello there i would to know when the event will take place');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `participants`
+--
+
+DROP TABLE IF EXISTS `participants`;
+CREATE TABLE IF NOT EXISTS `participants` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `registration_no` varchar(50) NOT NULL,
+  `course` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+
+ <?php
+include('../config.php');
+session_start();
+$user = $_SESSION['username'];
+if(!isset($user))
+{
+header('location:index.php');
+}else{
+	$sql = mysqli_query($con, "select * from admin where username='$user'");
+	$row = mysqli_fetch_array($sql);
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link type="text/css" rel="stylesheet" href="../css/style.css">
+<link type="text/css" rel="stylesheet" href="../css/menu.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body style="font-family:Verdana;">
+<div style="background-color:#f1f1f1;padding:15px;">
+    <div class="container">
+        <nav class="navbar">
+     <!-- LOGO -->
+     <div class="logo">Admin Dashboard</div>
+     <!-- NAVIGATION MENU -->
+     <ul class="nav-links">
+       <!-- USING CHECKBOX HACK -->
+       <input type="checkbox" id="checkbox_toggle" />
+       <label for="checkbox_toggle" class="hamburger">&#9776;</label>
+       <!-- NAVIGATION MENUS -->
+       <div class="menu">
+         <li><a href="dashboard.php">Home</a></li>
+         <li><a href="../participant.php">Participant</a></li>
+         <li><a href="../contact.php">Contact</a></li>
+       </div>
+     </ul>
+   </nav>
+  </div>
+</div>
+<div class="container">
+<div style="overflow:auto">
+  <div class="menuleft" style=";">
+    <div class="menuitem" style="background:lightblue;"><i class="fa fa-user" style="font-size:40px;"></i> <?php echo $row["fullname"]; ?></div>
+    <div class="menuitem"><a href="dashboard.php"><i class="fa fa-home" style="font-size:20px"></i> Home</a></div>
+	<div class="menuitem"><a href="dashboard.php?v=add_participants"><i class="fa fa-plus" style="font-size:20px"></i> Add Participants</a></div>
+	<div class="menuitem"><a href="participant.php"><i class="fa fa-user" style="font-size:20px"></i> Comfirm Participants</a></div>
+    <div class="menuitem"><a href="dashboard.php?v=participants"><i class="fa fa-users" style="font-size:20px"></i> Participants</a></div>
+    <div class="menuitem"><a href="dashboard.php?v=contact"><i class="fa fa-envelope" style="font-size:20px"></i> Contact</a></div> 
+	<div class="menuitem"><a href="logout.php"><i class="fa fa-sign-out" style="font-size:20px"></i> Log out</a></div>
+  </div>
+  
+
+
+  <div class="main">
+      <?php 
+	@$id=$_GET['id'];
+	@$v=$_GET['v'];
+	if($v!="")
+	{
+		if($v=="add_participants")
+			{
+				include('add_participants.php');
+			}			
+		elseif($v=="contact")
+			{
+				include('contact.php');
+			}									
+		elseif($v=="")
+			{
+				include('');
+			}
+	}
+	else
+	{
+	include('home.php');
+	}
+
+
+?>
+    
+  </div>
+
+  <div class="right">
+    <h2>What?</h2>
+    <p>Upcoming IEEE conference to be hosted at Uganda Christian University</p>
+    <h2>Where?</h2>
+    <p>The conference will be virtual with the moderators on this online flatform.</p>
+    <h2>When?</h2>
+    <p>It will start on 8th December 2021 to 10th December 2021.</p>
+  </div>
+</div>
+
+
+<div style="background-color:#f1f1f1;text-align:center;padding:10px;margin-top:7px;font-size:12px;"> This website is a part of Educational requirment for UCE and its developed by Anei</div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
